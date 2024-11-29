@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text2/flutter_masked_text2.dart'; // Importar o pacote para a máscara
-
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import '../modelos/contato.dart';
 import '../banco_dados/db.dart';
 
 class GerenciarContato extends StatefulWidget {
-  final Contato? contato; // Contato opcional para alteração, null se for criação
-
+  final Contato? contato; // Contato que será gerenciado (pode ser nulo para um novo contato)
   const GerenciarContato({super.key, this.contato});
 
   @override
@@ -14,11 +12,12 @@ class GerenciarContato extends StatefulWidget {
 }
 
 class _GerenciarContatoState extends State<GerenciarContato> {
+  // Controladores para os campos de texto
   final TextEditingController _nomeController = TextEditingController();
   final MaskedTextController _telefoneController = MaskedTextController(mask: '(00) 00000-0000'); // Máscara inicial para celular
   final TextEditingController _emailController = TextEditingController();
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Adicionando chave para validação do formulário
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Chave para o formulário
 
   @override
   void initState() {
@@ -31,39 +30,36 @@ class _GerenciarContatoState extends State<GerenciarContato> {
     }
   }
 
+  // Função para atualizar a máscara do telefone dinamicamente
   void _atualizarMascaraTelefone() {
-    String telefone = _telefoneController.text.replaceAll(RegExp(r'\D'), ''); // Remover caracteres não numéricos
+    String telefone = _telefoneController.text.replaceAll(RegExp(r'\D'), ''); // Remove caracteres não numéricos
     if (telefone.length == 3) {
-      // Caso o DDD tenha sido preenchido (exemplo: 011), mantém a máscara padrão
-      _telefoneController.updateMask('(00) 00000-0000'); // Máscara celular
+      _telefoneController.updateMask('(00) 00000-0000'); // Define a máscara para celular
     } else if (telefone.length == 4) {
-      // Verificando o início do número após o DDD
       if (telefone[2] == '9') {
-        // Se o terceiro caractere (dígito após o DDD) for "9", é celular
-        _telefoneController.updateMask('(00) 00000-0000');
+        _telefoneController.updateMask('(00) 00000-0000'); // Mantém a máscara para celular
       } else {
-        // Caso contrário, é telefone fixo
-        _telefoneController.updateMask('(00) 0000-0000');
+        _telefoneController.updateMask('(00) 0000-0000'); // Define a máscara para telefone fixo
       }
     }
   }
 
+  // Função para salvar o contato no banco de dados
   Future<void> _salvarContato() async {
-    if (_formKey.currentState?.validate() ?? false) {
+    if (_formKey.currentState?.validate() ?? false) { // Valida o formulário
+      // Cria um objeto Contato com os dados dos campos
       final contato = Contato(
-        id: widget.contato?.id, // Se for uma alteração, mantém o ID do contato original
+        id: widget.contato?.id,
         nome: _nomeController.text,
         telefone: _telefoneController.text,
         email: _emailController.text,
       );
       if (contato.id == null) {
-        // Se o ID for null, é uma inclusão
-        await DB.instancia.inserirContato(contato);
+        await DB.instancia.inserirContato(contato); // Insere um novo contato
       } else {
-        // Se o ID não for null, é uma alteração
-        await DB.instancia.atualizarContato(contato);
+        await DB.instancia.atualizarContato(contato); // Atualiza um contato existente
       }
-      Navigator.pop(context, contato); // Retorna o contato atualizado para a tela anterior
+      Navigator.pop(context, contato); // Fecha a tela e retorna o contato
     }
   }
 
@@ -71,19 +67,20 @@ class _GerenciarContatoState extends State<GerenciarContato> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // Define o título da AppBar de acordo com a ação (cadastrar ou alterar)
         title: Text(widget.contato == null ? 'Cadastrar Contato' : 'Alterar Contato'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey, // Associando o formulário à chave para validação
+          key: _formKey, // Define a chave do formulário
           child: Column(
             children: [
               // Campo Nome
               TextFormField(
                 controller: _nomeController,
                 decoration: const InputDecoration(labelText: 'Nome'),
-                validator: (value) {
+                validator: (value) { // Validação do campo nome
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira o nome.';
                   }
@@ -95,15 +92,15 @@ class _GerenciarContatoState extends State<GerenciarContato> {
                 controller: _telefoneController,
                 decoration: const InputDecoration(labelText: 'Telefone'),
                 keyboardType: TextInputType.phone,
-                onChanged: (value) {
-                  _atualizarMascaraTelefone(); // Atualizar a máscara quando o texto mudar
+                onChanged: (value) { // Chama a função para atualizar a máscara do telefone a cada mudança
+                  _atualizarMascaraTelefone();
                 },
-                validator: (value) {
+                validator: (value) { // Validação do campo telefone
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira o telefone.';
                   }
                   // Remover máscara para verificar o número real
-                  final telefone = value.replaceAll(RegExp(r'\D'), ''); // Remove caracteres não numéricos
+                  final telefone = value.replaceAll(RegExp(r'\D'), '');
                   if (telefone.length != 10 && telefone.length != 11) {
                     return 'O telefone deve ter 10 (fixo) ou 11 (celular) dígitos.';
                   }
@@ -115,7 +112,7 @@ class _GerenciarContatoState extends State<GerenciarContato> {
                 controller: _emailController,
                 decoration: const InputDecoration(labelText: 'E-mail'),
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) {
+                validator: (value) { // Validação do campo email
                   if (value == null || value.isEmpty) {
                     return 'Por favor, insira o e-mail.';
                   }
@@ -132,12 +129,12 @@ class _GerenciarContatoState extends State<GerenciarContato> {
                 children: [
                   // Botão Salvar
                   ElevatedButton(
-                    onPressed: _salvarContato,
+                    onPressed: _salvarContato, // Chama a função para salvar o contato
                     child: const Text('Salvar'),
                   ),
                   // Botão Cancelar
                   ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Navigator.pop(context), // Fecha a tela
                     child: const Text('Cancelar'),
                   ),
                 ],
