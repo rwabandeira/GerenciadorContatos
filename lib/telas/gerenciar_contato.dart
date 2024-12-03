@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 import '../modelos/contato.dart';
 import '../banco_dados/db.dart';
+import '../estilos/estilo.dart';
 
 class GerenciarContato extends StatefulWidget {
   final Contato? contato; // Contato que será gerenciado (pode ser nulo para um novo contato)
@@ -69,77 +70,88 @@ class _GerenciarContatoState extends State<GerenciarContato> {
       appBar: AppBar(
         // Define o título da AppBar de acordo com a ação (cadastrar ou alterar)
         title: Text(widget.contato == null ? 'Cadastrar Contato' : 'Alterar Contato'),
+        backgroundColor: Colors.blue[400], // Cor da AppBar
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey, // Define a chave do formulário
-          child: Column(
-            children: [
-              // Campo Nome
-              TextFormField(
-                controller: _nomeController,
-                decoration: const InputDecoration(labelText: 'Nome'),
-                validator: (value) { // Validação do campo nome
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o nome.';
-                  }
-                  return null;
-                },
-              ),
-              // Campo Telefone com máscara dinâmica e validação
-              TextFormField(
-                controller: _telefoneController,
-                decoration: const InputDecoration(labelText: 'Telefone'),
-                keyboardType: TextInputType.phone,
-                onChanged: (value) { // Chama a função para atualizar a máscara do telefone a cada mudança
-                  _atualizarMascaraTelefone();
-                },
-                validator: (value) { // Validação do campo telefone
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o telefone.';
-                  }
-                  // Remover máscara para verificar o número real
-                  final telefone = value.replaceAll(RegExp(r'\D'), '');
-                  if (telefone.length != 10 && telefone.length != 11) {
-                    return 'O telefone deve ter 10 (fixo) ou 11 (celular) dígitos.';
-                  }
-                  return null;
-                },
-              ),
-              // Campo E-mail com validação
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: 'E-mail'),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) { // Validação do campo email
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira o e-mail.';
-                  }
-                  final emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
-                  if (!emailRegExp.hasMatch(value)) {
-                    return 'Por favor, insira um e-mail válido.';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Botão Salvar
-                  ElevatedButton(
-                    onPressed: _salvarContato, // Chama a função para salvar o contato
-                    child: const Text('Salvar'),
-                  ),
-                  // Botão Cancelar
-                  ElevatedButton(
-                    onPressed: () => Navigator.pop(context), // Fecha a tela
-                    child: const Text('Cancelar'),
-                  ),
-                ],
-              ),
-            ],
+      body: Container( // Adicione o Container para o gradiente
+        decoration: GenericoEstilos.estiloFundoGradiente, // Aplica o estilo de fundo gradiente
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey, // Define a chave do formulário
+            child: Column(
+              children: [
+                // Campo Nome
+                TextFormField(
+                  controller: _nomeController,
+                  style: GerenciarContatoEstilos.estiloTextoGerenciarContato, // Aplica o estilo de texto
+                  decoration: GerenciarContatoEstilos.decoracaoCampoTextoGerenciarContato, // Aplica a decoração do campo
+                  validator: (value) { // Validação do campo nome
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o nome.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10), // Espaçamento vertical
+                // Campo Telefone
+                TextFormField(
+                  controller: _telefoneController,
+                  style: GerenciarContatoEstilos.estiloTextoGerenciarContato, // Aplica o estilo de texto
+                  decoration: GerenciarContatoEstilos.decoracaoCampoTextoGerenciarContato.copyWith(labelText: 'Telefone'), // Aplica a decoração do campo
+                  keyboardType: TextInputType.phone,
+                  onChanged: (value) { // Chama a função para atualizar a máscara do telefone a cada mudança
+                    _atualizarMascaraTelefone();
+                  },
+                  validator: (value) { // Validação do campo telefone
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o telefone.';
+                    }
+                    // Remover máscara para verificar o número real
+                    final telefone = value.replaceAll(RegExp(r'\D'), '');
+                    if (telefone.length != 10 && telefone.length != 11) {
+                      return 'O telefone deve ter 10 (fixo) ou 11 (celular) dígitos.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 10), // Espaçamento vertical
+                // Campo E-mail
+                TextFormField(
+                  controller: _emailController,
+                  style: GerenciarContatoEstilos.estiloTextoGerenciarContato, // Aplica o estilo de texto
+                  decoration: GerenciarContatoEstilos.decoracaoCampoTextoGerenciarContato.copyWith(labelText: 'E-mail'), // Aplica a decoração do campo
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) { // Validação do campo email
+                    if (value == null || value.isEmpty) {
+                      return 'Por favor, insira o e-mail.';
+                    }
+                    final emailRegExp = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
+                    if (!emailRegExp.hasMatch(value)) {
+                      return 'Por favor, insira um e-mail válido.';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // Botão Salvar
+                    ElevatedButton(
+                      style: GenericoEstilos.estiloBotao, // Aplica o estilo de botão
+                      onPressed: _salvarContato, // Chama a função para salvar o contato
+                      child: const Text('Salvar', style: TextStyle(color: Colors.white)),
+                    ),
+                    // Botão Cancelar
+                    ElevatedButton(
+                      style: GenericoEstilos.estiloBotao, // Aplica o estilo de botão
+                      onPressed: () => Navigator.pop(context), // Fecha a tela
+                      child: const Text('Cancelar', style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

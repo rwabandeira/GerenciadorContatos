@@ -2,12 +2,28 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../modelos/contato.dart';
 
-class DB {
-  // Cria uma instância única da classe DB (Singleton)
-  DB._();
-  static final DB instancia = DB._();
+// class DB {
+//   // Cria uma instância única da classe DB (Singleton)
+//   DB._();
+//   static final DB instancia = DB._();
 
-  Database? _database;
+//   // Define a propriedade _database como pública
+//   Database? _database;
+
+class DB {
+  static final DB instancia = DB._interno();
+  static Database? _database;
+
+  DB._interno();
+
+  // factory DB() {
+  //   return instancia;
+  // }
+
+  // Construtor que aceita uma instância de Database como parâmetro opcional
+  DB({Database? database}) {
+    _database = database;
+  }
 
   // Obtém a instância do banco de dados, criando-o se necessário
   Future<Database> get database async {
