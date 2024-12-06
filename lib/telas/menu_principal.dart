@@ -20,7 +20,7 @@ class MenuPrincipal extends StatelessWidget {
                 style: MenuPrincipalEstilos.estiloTitulo,
               ),
               const SizedBox(height: 40), // Espaçamento vertical
-              Image.asset('assets/imagem_menu.png', height: 200), // Exibe uma imagem
+              Image.asset('assets/imagem_menu.png', height: 100), // Exibe uma imagem
               const SizedBox(height: 40), // Espaçamento vertical
               Row( // Organiza os botões em uma linha
                 mainAxisAlignment: MainAxisAlignment.center, // Alinha os botões no centro horizontalmente

@@ -20,7 +20,7 @@ class GenericoEstilos {
 // Estilos para o MenuPrincipal
 class MenuPrincipalEstilos {
   static const TextStyle estiloTitulo = TextStyle(
-    fontSize: 32,
+    fontSize: 20,
     fontWeight: FontWeight.bold,
     color: Colors.white,
     shadows: [

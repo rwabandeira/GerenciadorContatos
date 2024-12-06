@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'telas/menu_principal.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'dart:io' show Platform; // Import para verificar a plataforma
+import 'banco_dados/db.dart';
 
-void main() {
-  databaseFactory = databaseFactoryFfi;
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializa a fábrica de banco de dados FFI (para plataformas que não suportam o sqflite nativo)
+  if (Platform.isLinux || Platform.isWindows || Platform.isMacOS) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

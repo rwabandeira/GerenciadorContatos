@@ -36,8 +36,9 @@ class DB {
   Future<Database> _inicializarBanco() async {
     // Obtém o caminho onde o banco de dados será armazenado
     final caminho = await getDatabasesPath();
+    final dbPath = join(caminho, 'contatos.db');
     final db = openDatabase(
-      join(caminho, 'contatos.db'),
+      dbPath,
       onCreate: (db, version) {
         // Cria a tabela 'contatos' com os campos: id, nome, telefone e email
         db.execute('''
