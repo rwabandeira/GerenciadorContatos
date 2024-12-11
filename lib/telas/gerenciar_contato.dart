@@ -55,12 +55,33 @@ class _GerenciarContatoState extends State<GerenciarContato> {
         telefone: _telefoneController.text,
         email: _emailController.text,
       );
-      if (contato.id == null) {
-        await DB.instancia.inserirContato(contato); // Insere um novo contato
-      } else {
-        await DB.instancia.atualizarContato(contato); // Atualiza um contato existente
+
+      try {
+        if (contato.id == null) {
+          await DB.instancia.inserirContato(contato); // Insere um novo contato
+          if (mounted) { // Adicione a verificação aqui
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Contato incluído com sucesso!')),
+            );
+          }
+        } else {
+          await DB.instancia.atualizarContato(contato); // Atualiza um contato existente
+          if (mounted) { // Adicione a verificação aqui
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Contato atualizado com sucesso!')),
+            );
+          }
+        }
+
+        if (!mounted) return;
+        Navigator.pop(context, contato); // Fecha a tela e retorna o contato
+      } on Exception catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Erro ao salvar contato: $e')),
+          );
+        }
       }
-      Navigator.pop(context, contato); // Fecha a tela e retorna o contato
     }
   }
 

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'telas/menu_principal.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'dart:io' show Platform; // Import para verificar a plataforma
-import 'banco_dados/db.dart';
+import 'dart:io' show Platform;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
