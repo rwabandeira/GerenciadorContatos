@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gerenciador_contatos/telas/menu_principal.dart';
-import 'package:gerenciador_contatos/telas/gerenciar_contato.dart';
-import 'package:gerenciador_contatos/telas/listar_contato.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {

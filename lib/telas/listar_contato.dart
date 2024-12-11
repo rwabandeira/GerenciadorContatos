@@ -92,10 +92,24 @@ class _ListarContatoState extends State<ListarContato> {
                                 IconButton( // Botão para excluir o contato
                                   icon: const Icon(Icons.delete, color: Colors.red), // Cor do ícone
                                   onPressed: () async {
-                                    final confirmacao = await _confirmarExclusao( // Exibe um diálogo de confirmação
-                                        context, contato.id!);
-                                    if (confirmacao == true) { // Exclui o contato se confirmado
-                                      await DB.instancia.excluirContato(contato.id!);
+                                    final confirmacao = await _confirmarExclusao(context, contato.id!); // Exibe um diálogo de confirmação
+                                    if (confirmacao == true) {
+                                      try {
+                                        await DB.instancia.excluirContato(contato.id!); // Exclui um contato existente
+
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text('Contato excluído com sucesso!')),
+                                          );
+                                        }
+                                      } on Exception catch (e) {
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('Erro ao excluir contato: $e')),
+                                          );
+                                        }
+                                      }
+
                                       _carregarContatos(); // Recarrega os contatos após a exclusão
                                     }
                                   },

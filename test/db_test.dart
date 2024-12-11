@@ -10,7 +10,7 @@ void main() {
   databaseFactory = databaseFactoryFfi;
 
   // Cria uma instância do banco de dados
-  final db = DB();
+  final db = DB.instancia;
 
   group('Teste de operações no banco de dados:', () {
     test('Insere contato no banco de dados', () async {

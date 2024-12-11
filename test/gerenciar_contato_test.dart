@@ -1,8 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:gerenciador_contatos/telas/gerenciar_contato.dart';
-import 'package:flutter_masked_text2/flutter_masked_text2.dart';
-import 'package:gerenciador_contatos/banco_dados/db.dart';
 import 'package:gerenciador_contatos/modelos/contato.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
